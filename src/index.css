@@ -12,7 +12,7 @@
 
   font: 18px/145% var(--sans);
   color: var(--text);
-  background: #f4f3ec;
+  background: #e8e8e8;
   color-scheme: light dark;
 }
 
@@ -27,7 +27,7 @@
     --accent-border: rgba(192, 132, 252, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-    background: #0f1014;
+    background: #e8e8e8;
   }
 }
 
