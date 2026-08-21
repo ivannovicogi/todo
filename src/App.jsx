@@ -20,7 +20,7 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos))
-  }, [])
+  }, [todos])
 
   function addTodo(e) {
     e.preventDefault()
@@ -44,15 +44,15 @@ export default function App() {
   }
 
   function toggleAll() {
-    const shouldComplete = todos.some((todo) => !todo.completed)
+    const shouldComplete = todos.every((todo) => todo.completed)
     todos.forEach((todo) => {
-      todo.completed = shouldComplete
-    })
+      todo.completed = !shouldComplete;
+    });
     setTodos(todos)
   }
 
   function clearCompleted() {
-    setTodos(todos.filter((todo) => todo.completed))
+    setTodos(todos.filter((todo) => !todo.completed))
   }
 
   function startEdit(index, text) {
@@ -66,7 +66,7 @@ export default function App() {
     setEditingIndex(-1)
   }
 
-  const remaining = todos.filter((todo) => todo.completed).length - 1
+  const remaining = todos.filter((todo) => !todo.completed).length
 
   return (
     <main className="app">
