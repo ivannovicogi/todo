@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react'
 import './App.css'
 
 function loadTodos() {
-  return JSON.parse(localStorage.getItem('todos') || '[]')
+  try {
+    return JSON.parse(localStorage.getItem('todos') || '[]')
+  } catch (error) {
+    console.error('Failed to load todos from localStorage:', error);
+    return [];
+  }
 }
 
 export default function App() {
@@ -32,28 +37,33 @@ export default function App() {
       }
       setTodos([...todos, newTodo])
       setInput('')
+      localStorage.setItem('todos', JSON.stringify([...todos, newTodo]));
     }
   }
 
   function toggleTodo(index) {
-    setTodos(todos.map((todo, i) => i === index ? { ...todo, completed: !todo.completed } : todo))
-    localStorage.setItem('todos', JSON.stringify(todos.map((todo, i) => i === index ? { ...todo, completed: !todo.completed } : todo)));
+    const updatedTodos = todos.map((todo, i) => i === index ? { ...todo, completed: !todo.completed } : todo);
+    setTodos(updatedTodos);
+    localStorage.setItem('todos', JSON.stringify(updatedTodos));
   }
 
   function deleteTodo(index) {
-    setTodos(todos.filter((_, i) => i !== index))
-    localStorage.setItem('todos', JSON.stringify(todos.filter((_, i) => i !== index)));
+    const updatedTodos = todos.filter((_, i) => i !== index);
+    setTodos(updatedTodos);
+    localStorage.setItem('todos', JSON.stringify(updatedTodos));
   }
 
   function toggleAll() {
     const shouldComplete = todos.some((todo) => !todo.completed)
-    setTodos(todos.map(todo => ({ ...todo, completed: shouldComplete })))
-    localStorage.setItem('todos', JSON.stringify(todos.map(todo => ({ ...todo, completed: shouldComplete }))));
+    const updatedTodos = todos.map(todo => ({ ...todo, completed: shouldComplete }));
+    setTodos(updatedTodos);
+    localStorage.setItem('todos', JSON.stringify(updatedTodos));
   }
 
   function clearCompleted() {
-    setTodos(todos.filter((todo) => !todo.completed))
-    localStorage.setItem('todos', JSON.stringify(todos.filter((todo) => !todo.completed)));
+    const updatedTodos = todos.filter((todo) => !todo.completed);
+    setTodos(updatedTodos);
+    localStorage.setItem('todos', JSON.stringify(updatedTodos));
   }
 
   function startEdit(index, text) {
@@ -62,9 +72,10 @@ export default function App() {
   }
 
   function saveEdit(index) {
-    setTodos(todos.map((todo, i) => i === index ? { ...todo, text: editText } : todo))
+    const updatedTodos = todos.map((todo, i) => i === index ? { ...todo, text: editText } : todo);
+    setTodos(updatedTodos);
     setEditingIndex(-1)
-    localStorage.setItem('todos', JSON.stringify(todos.map((todo, i) => i === index ? { ...todo, text: editText } : todo)));
+    localStorage.setItem('todos', JSON.stringify(updatedTodos));
   }
 
   const remaining = todos.filter((todo) => !todo.completed).length
