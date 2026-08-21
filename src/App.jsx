@@ -4,7 +4,7 @@ import './App.css'
 function loadTodos() {
   return JSON.parse(localStorage.getItem('todos') || '[]')
 }
-
+// dasd
 export default function App() {
   const [todos, setTodos] = useState(loadTodos)
   const [input, setInput] = useState('')
