@@ -32,25 +32,28 @@ export default function App() {
       }
       setTodos([...todos, newTodo])
       setInput('')
-      localStorage.setItem('todos', JSON.stringify([...todos, newTodo]))
     }
   }
 
   function toggleTodo(index) {
     setTodos(todos.map((todo, i) => i === index ? { ...todo, completed: !todo.completed } : todo))
+    localStorage.setItem('todos', JSON.stringify(todos.map((todo, i) => i === index ? { ...todo, completed: !todo.completed } : todo)));
   }
 
   function deleteTodo(index) {
     setTodos(todos.filter((_, i) => i !== index))
+    localStorage.setItem('todos', JSON.stringify(todos.filter((_, i) => i !== index)));
   }
 
   function toggleAll() {
     const shouldComplete = todos.some((todo) => !todo.completed)
     setTodos(todos.map(todo => ({ ...todo, completed: shouldComplete })))
+    localStorage.setItem('todos', JSON.stringify(todos.map(todo => ({ ...todo, completed: shouldComplete }))));
   }
 
   function clearCompleted() {
     setTodos(todos.filter((todo) => !todo.completed))
+    localStorage.setItem('todos', JSON.stringify(todos.filter((todo) => !todo.completed)));
   }
 
   function startEdit(index, text) {
@@ -61,6 +64,7 @@ export default function App() {
   function saveEdit(index) {
     setTodos(todos.map((todo, i) => i === index ? { ...todo, text: editText } : todo))
     setEditingIndex(-1)
+    localStorage.setItem('todos', JSON.stringify(todos.map((todo, i) => i === index ? { ...todo, text: editText } : todo)));
   }
 
   const remaining = todos.filter((todo) => !todo.completed).length
