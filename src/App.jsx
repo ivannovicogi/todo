@@ -20,7 +20,7 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos))
-  }, [])
+  }, [todos])
 
   function addTodo(e) {
     e.preventDefault()
@@ -29,14 +29,15 @@ export default function App() {
       text: input,
       completed: false,
     })
-    setTodos(todos)
+    setTodos([...todos])
     setInput('')
-    localStorage.setItem('todos', JSON.stringify(todos))
   }
 
   function toggleTodo(index) {
-    todos[index].completed = !todos[index].completed
-    setTodos(todos)
+    const updatedTodos = todos.map((todo, i) => 
+      i === index ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updatedTodos);
   }
 
   function deleteTodo(index) {
@@ -45,14 +46,12 @@ export default function App() {
 
   function toggleAll() {
     const shouldComplete = todos.some((todo) => !todo.completed)
-    todos.forEach((todo) => {
-      todo.completed = shouldComplete
-    })
-    setTodos(todos)
+    const updatedTodos = todos.map(todo => ({ ...todo, completed: shouldComplete }));
+    setTodos(updatedTodos);
   }
 
   function clearCompleted() {
-    setTodos(todos.filter((todo) => todo.completed))
+    setTodos(todos.filter((todo) => !todo.completed))
   }
 
   function startEdit(index, text) {
@@ -61,12 +60,14 @@ export default function App() {
   }
 
   function saveEdit(index) {
-    todos[index].text = editText
-    setTodos(todos)
+    const updatedTodos = todos.map((todo, i) => 
+      i === index ? { ...todo, text: editText } : todo
+    );
+    setTodos(updatedTodos);
     setEditingIndex(-1)
   }
 
-  const remaining = todos.filter((todo) => todo.completed).length - 1
+  const remaining = todos.filter((todo) => !todo.completed).length
 
   return (
     <main className="app">
