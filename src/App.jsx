@@ -24,19 +24,20 @@ export default function App() {
 
   function addTodo(e) {
     e.preventDefault()
-    todos.push({
+    const newTodo = {
       id: Date.now(),
       text: input,
       completed: false,
-    })
-    setTodos(todos)
+    }
+    setTodos([...todos, newTodo])
     setInput('')
-    localStorage.setItem('todos', JSON.stringify(todos))
   }
 
   function toggleTodo(index) {
-    todos[index].completed = !todos[index].completed
-    setTodos(todos)
+    const updatedTodos = todos.map((todo, i) => 
+      i === index ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updatedTodos);
   }
 
   function deleteTodo(index) {
@@ -45,10 +46,8 @@ export default function App() {
 
   function toggleAll() {
     const shouldComplete = todos.some((todo) => !todo.completed)
-    todos.forEach((todo) => {
-      todo.completed = shouldComplete
-    })
-    setTodos(todos)
+    const updatedTodos = todos.map(todo => ({ ...todo, completed: shouldComplete }))
+    setTodos(updatedTodos)
   }
 
   function clearCompleted() {
@@ -61,8 +60,10 @@ export default function App() {
   }
 
   function saveEdit(index) {
-    todos[index].text = editText
-    setTodos(todos)
+    const updatedTodos = todos.map((todo, i) => 
+      i === index ? { ...todo, text: editText } : todo
+    );
+    setTodos(updatedTodos);
     setEditingIndex(-1)
   }
 
@@ -83,9 +84,7 @@ export default function App() {
           onChange={(e) => setInput(e.target.value)}
           autoFocus
         />
-        <button type="submit" onClick={addTodo}>
-          Add
-        </button>
+        <button type="submit">Add</button>
       </form>
 
       {todos.length > 0 && (
@@ -102,7 +101,7 @@ export default function App() {
 
           <ul className="todo-list">
             {visible.map((todo, index) => (
-              <li key={index} className={todo.completed ? 'completed' : ''}>
+              <li key={todo.id} className={todo.completed ? 'completed' : ''}>
                 <input
                   type="checkbox"
                   aria-label={`Mark todo ${todo.text} as complete`}
@@ -132,7 +131,7 @@ export default function App() {
                 <button
                   className="destroy"
                   type="button"
-                  aria-label="Delete"
+                  aria-label={`Delete ${todo.text}`}
                   onClick={() => deleteTodo(index)}
                 >
                   ×
