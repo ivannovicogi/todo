@@ -34,9 +34,12 @@ export default function App() {
     localStorage.setItem('todos', JSON.stringify(todos))
   }
 
-  function toggleTodo(index) {
-    todos[index].completed = !todos[index].completed
-    setTodos(todos)
+  function toggleTodo(id) {
+    setTodos((current) =>
+      current.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    )
   }
 
   function deleteTodo(index) {
@@ -101,11 +104,11 @@ export default function App() {
 
           <ul className="todo-list">
             {visible.map((todo, index) => (
-              <li key={index} className={todo.completed ? 'completed' : ''}>
+              <li key={todo.id ?? index} className={todo.completed ? 'completed' : ''}>
                 <input
                   type="checkbox"
                   checked={todo.completed}
-                  onChange={() => toggleTodo(index)}
+                  onChange={() => toggleTodo(todo.id)}
                 />
 
                 {editingIndex === index ? (
