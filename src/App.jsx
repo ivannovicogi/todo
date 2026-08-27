@@ -34,9 +34,12 @@ export default function App() {
     localStorage.setItem('todos', JSON.stringify(todos))
   }
 
-  function toggleTodo(index) {
-    todos[index].completed = !todos[index].completed
-    setTodos(todos)
+  function toggleTodo(id) {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    )
   }
 
   function deleteTodo(index) {
@@ -45,10 +48,7 @@ export default function App() {
 
   function toggleAll() {
     const shouldComplete = todos.some((todo) => !todo.completed)
-    todos.forEach((todo) => {
-      todo.completed = shouldComplete
-    })
-    setTodos(todos)
+    setTodos(todos.map((todo) => ({ ...todo, completed: shouldComplete })))
   }
 
   function clearCompleted() {
@@ -105,7 +105,7 @@ export default function App() {
                 <input
                   type="checkbox"
                   checked={todo.completed}
-                  onChange={() => toggleTodo(index)}
+                  onChange={() => toggleTodo(todo.id)}
                 />
 
                 {editingIndex === index ? (
