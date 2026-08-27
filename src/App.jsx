@@ -20,18 +20,17 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos))
-  }, [])
+  }, [todos])
 
   function addTodo(e) {
     e.preventDefault()
-    todos.push({
+    const newTodo = {
       id: Date.now(),
       text: input,
       completed: false,
-    })
-    setTodos(todos)
+    }
+    setTodos([...todos, newTodo])
     setInput('')
-    localStorage.setItem('todos', JSON.stringify(todos))
   }
 
   function toggleTodo(id) {
@@ -52,7 +51,7 @@ export default function App() {
   }
 
   function clearCompleted() {
-    setTodos(todos.filter((todo) => todo.completed))
+    setTodos(todos.filter((todo) => !todo.completed))
   }
 
   function startEdit(index, text) {
@@ -61,12 +60,15 @@ export default function App() {
   }
 
   function saveEdit(index) {
-    todos[index].text = editText
-    setTodos(todos)
+    const updatedTodos = todos.map((todo, i) =>
+      i === index ? { ...todo, text: editText } : todo
+    )
+    setTodos(updatedTodos)
     setEditingIndex(-1)
+    setEditText('')
   }
 
-  const remaining = todos.filter((todo) => todo.completed).length - 1
+  const remaining = todos.filter((todo) => !todo.completed).length
 
   return (
     <main className="app">
@@ -101,7 +103,7 @@ export default function App() {
 
           <ul className="todo-list">
             {visible.map((todo, index) => (
-              <li key={index} className={todo.completed ? 'completed' : ''}>
+              <li key={todo.id} className={todo.completed ? 'completed' : ''}>
                 <input
                   type="checkbox"
                   checked={todo.completed}
